@@ -34,19 +34,19 @@ public class ParallelCFPGrowth
 
 	Long startTime;
 	Long endTime;
-	private static final Logger log = LoggerFactory.getLogger(ParallelCFPGrowth.class);
-	
+	private static final Logger log = LoggerFactory.getLogger(ParallelCFPGrowth.class);	
 	//存放 item所对应的index 及 其 MIS
-	Map<Integer, Long> fSupportMap = new HashMap<>();
+	private Map<Integer, Long> fSupportMap = new HashMap<>();
 	// 存放item 和其对应的index
-	Map< String ,Integer> fMap = new HashMap<>();
+	private Map<String ,Integer> fMap = new HashMap<>();
 	// 存放 index 和其对应的item
-	Map<Integer, String> map = new HashMap<>();
+	private Map<Integer, String> map = new HashMap<>();
 	// 存放 index 和其 对应的最小支持度
 	Map<Integer, Long> supportMap = new HashMap<>();
 	
 	Long MIS[] ;
 
+	TopKStringPatterns frequentPatterns = new TopKStringPatterns();
 	//存放 频繁项集 和其 支持度
 	List<Pair<List<String>, Long>> patterns = new ArrayList<>();
 	 /**
@@ -59,7 +59,7 @@ public class ParallelCFPGrowth
 	  * @return 返回 频繁项集 及其支持度
 	  */
 	public TopKStringPatterns runPCFPGrowth(MTree tree,
-								Map<Integer, Long> mapSupport, 
+								Map<Integer, Long> mapSupport,
 								Long transcationCount,
 								List<Pair<String, Long>> itemHeaderTable, 
 								long leastMIS)
@@ -69,7 +69,6 @@ public class ParallelCFPGrowth
 		
 		tree.createHeaderList();
 		// 创建 树的 headerList 表
-//		tree.headerList = new ArrayList<>(mapSupport.keySet());
 		if (mapSupport.keySet().size() != tree.headerList.size())
 		{
 			
@@ -100,7 +99,7 @@ public class ParallelCFPGrowth
 		
 		log.info("PCFPGrowth run Time : " + (endTime - startTime));
 		
-		return new TopKStringPatterns(patterns);
+		return frequentPatterns;
 		
 	}
 
@@ -116,7 +115,7 @@ public class ParallelCFPGrowth
 		// We check if there is only one item in the header table
 		if (tree.headerList.size() == 1)
 		{
-			MISNode node = tree.mapItemFirstNode.get(tree.headerList.get(0));
+			MISNode node = tree.getMapItemFirstNode().get(tree.headerList.get(0));
 			//如果该节点没有 
 			if (node.nodeLink == null)
 			{
@@ -167,7 +166,7 @@ public class ParallelCFPGrowth
 			
 			//生成该item节点的所有前缀 包含该节点
 			List<List<MISNode>> prefixPaths = new ArrayList<>();
-			MISNode path = tree.mapItemFirstNode.get(item);
+			MISNode path = tree.getMapItemFirstNode().get(item);
 			
 			while(path != null)
 			{
@@ -246,7 +245,8 @@ public class ParallelCFPGrowth
 			frequent.add(item);
 		}
 		pair = new Pair<List<String>, Long>(frequent, counter);
-		patterns.add(pair);
+//		patterns.add(pair);
+		frequentPatterns.add(pair);
 		
 	}
 

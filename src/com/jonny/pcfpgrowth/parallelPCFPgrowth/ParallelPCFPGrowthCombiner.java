@@ -24,14 +24,14 @@ public class ParallelPCFPGrowthCombiner extends Reducer<IntWritable, MISTree, In
 	protected void reduce(IntWritable key, Iterable<MISTree> values,
 			Reducer<IntWritable, MISTree, IntWritable, MISTree>.Context context) throws IOException, InterruptedException
 	{
-		MISTree cTree = new MISTree();
-		for (MISTree tr : values)
-		{
-			for(Pair<List<Integer>, Long> p : tr.transactionSet)
-			{
-				cTree.addPattern(p.getFirst(), p.getSecond());
-			}
-		}
-		context.write(key, cTree);
+//		MISTree cTree = new MISTree();
+//		for (MISTree tr : values)
+//		{
+//			for(Pair<List<Integer>, Long> p : tr.transactionSet)
+//			{
+////				cTree.addPattern(p.getFirst(), p.getSecond());
+//			}
+//		}
+//		context.write(key, cTree);
 	}
 }

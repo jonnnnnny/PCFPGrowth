@@ -32,6 +32,11 @@ public class TopKStringPatterns implements Writable
 		frequentPatterns.addAll(patterns);
 	}
 	
+	public void add(Pair<List<String>, Long> pair)
+	{
+		this.frequentPatterns.add(pair);
+	}
+	
 	public Iterator<Pair<List<String>, Long>> iterator()
 	{
 		return frequentPatterns.iterator();

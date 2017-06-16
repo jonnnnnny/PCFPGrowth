@@ -86,7 +86,7 @@ public class ParallelPCFPGrowthMapper extends Mapper<LongWritable, Text, IntWrit
 				context.setStatus("Parallel FPGrowth: Generating Group Dependent transactions for: "
                         + item);
 				wGroupID.set(groupID);
-				context.write(wGroupID, new MISTree(tempItems,1L));
+				context.write(wGroupID, new MISTree(tempItems));
 			}
 			groups.add(groupID);
 		}

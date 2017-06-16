@@ -28,15 +28,22 @@ public class MISNode
 	/**
 	 * constructor
 	 */
-	MISNode(){
+    public MISNode(){
 		
 	}
+    
+    public MISNode(Integer itemID, MISNode parent)
+    {
+    	this.itemID = itemID;
+    	this.parent = parent;
+    	this.parent.childs.add(this);
+    }
 
 	/**
 	 * Return the immmediate child of this node having a given ID.
 	 * If there is no such child, return null;
 	 */
-	MISNode getChildWithID(int id) {
+	public MISNode getChildWithID(int id) {
 		// for each child
 		for(MISNode child : childs){
 			// if the id is found, return the node
@@ -51,7 +58,7 @@ public class MISNode
 	 * Return the index of the immmediate child of this node having a given ID.
 	 * If there is no such child, return -1;
 	 */
-	int getChildIndexWithID(int id) {
+	public int getChildIndexWithID(int id) {
 		int i=0;
 		// for each child
 		for(MISNode child : childs){

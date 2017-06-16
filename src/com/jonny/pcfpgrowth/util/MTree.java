@@ -3,8 +3,10 @@ package com.jonny.pcfpgrowth.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
 *@author created by jonny
@@ -17,21 +19,31 @@ public class MTree
 //	//headertable  按照最小支持度降序存储 item 和 MIS
 	List<Pair<String, Long>> itemHeaderTable = null;
 	//保存headertable 中 每个item 在 MISTree中的第一个节点连接  
-	Map<Integer, MISNode> mapItemFirstNode = new HashMap<>();
+	private Map<Integer, MISNode> mapItemFirstNode = new HashMap<>();
 	
 	//保存每个item 在MISTree中的最后一个节点连接
-	Map<Integer, MISNode> mapItemLastNode = new HashMap<>();
+	private Map<Integer, MISNode> mapItemLastNode = new HashMap<>();
 	
-	List<Integer> headerList = null;
+//	 Map<Integer, Long> mapSupport = new HashMap<>();
+	
+	List<Integer> headerList = new ArrayList<>();
+	
+	private Set<Integer> headerListSet = new HashSet();
 	
 	MISNode root = new MISNode();
 	
-	public void addTransaction(List<Integer> transactionSet)
+	public void addTree(List<Integer> transactionSet)
 	{
 		MISNode currentNode = root;
 		
 		for (Integer item : transactionSet)
 		{
+			
+			
+			if (! headerListSet.contains(item))
+			{
+				headerListSet.add(item);
+			}
 			MISNode child = currentNode.getChildWithID(item);
 			if (child == null)
 			{
@@ -39,9 +51,8 @@ public class MTree
 				node.itemID = item;
 				node.parent = currentNode;
 				currentNode.childs.add(node);
-				
+//				MISNode node = new MISNode(item, currentNode);
 				currentNode = node;
-				
 				fixNodeLinks(item, node);
 			}else {
 				child.counter++;
@@ -66,12 +77,30 @@ public class MTree
 		{
 			mapItemFirstNode.put(item, node);
 		}
+		
+		
 	}
 	
 	public void createHeaderList()
 	{
-		headerList = new ArrayList<>(mapItemFirstNode.keySet());
+		headerList = new ArrayList<>(headerListSet);
 		Collections.sort(headerList);
+	}
+	
+//	public List<Integer> getHeaderList()
+//	{
+//		createHeaderList();
+//		return headerList;
+//	}
+	
+	public Map<Integer, MISNode> getMapItemFirstNode()
+	{
+		return mapItemFirstNode;
+	}
+	
+	public Map<Integer, MISNode> getMapItemLastNode()
+	{
+		return mapItemLastNode;
 	}
 	
 	/**

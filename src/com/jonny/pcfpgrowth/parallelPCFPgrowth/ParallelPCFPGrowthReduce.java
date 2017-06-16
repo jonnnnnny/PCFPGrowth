@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.mutable.MutableLong;
@@ -51,6 +53,7 @@ public class ParallelPCFPGrowthReduce extends
 	List<Pair<String,Long>> itemHeaderTable;
 	Map<String, Integer> fMap = new HashMap<>();
 	Map<Integer, Long> mapSupport = new HashMap<>();
+	Set<Integer> itemSet = new HashSet<>();
 		
 	@Override
 	protected void reduce(IntWritable key, Iterable<MISTree> values,
@@ -63,36 +66,30 @@ public class ParallelPCFPGrowthReduce extends
 		//同一组的事务 构建 MISTree
 		for (MISTree mtree : values)
 		{
-			for(Pair<List<Integer>, Long> transaction : mtree.transactionSet)
+			for(List<Integer> transaction : mtree.transactionSet)
 			{
-				Collections.sort(transaction.getFirst());
+				
 				//将分组后的事务建树
-				tree.addTransaction(transaction.getFirst());
+				tree.addTree(transaction);
 				// 同时记录 该组中 事务的数量
-				transcationCount += transaction.getSecond();
+				transcationCount += 1L;
 				// 统计 该组中 每个item 支持度
-				for (Integer item : transaction.getFirst())
+				for (Integer item : transaction)
 				{
 					// increase the support of the item by 1
-					if (mapSupport.containsKey(item))
-					{
-						mapSupport.put(item, mapSupport.get(item)+1l);
-					}else{
+					Long count = mapSupport.get(item);
+					if (count == null) {
 						mapSupport.put(item, 1l);
+					} else {
+						mapSupport.put(item, ++count);
 					}
-//					Long count = mapSupport.get(item);
-//					if (count == null) {
-//						mapSupport.put(item, 1l);
-//					} else {
-//						mapSupport.put(item, ++count);
-//					}
 				}
 			}
 		}
 		
 		
 		ParallelCFPGrowth pcfpGrowth = new ParallelCFPGrowth();
-		TopKStringPatterns topKStringPatterns = pcfpGrowth.runPCFPGrowth(tree, 
+		TopKStringPatterns topKStringPatterns = pcfpGrowth.runPCFPGrowth(tree,
 				mapSupport,
 				transcationCount, 
 				itemHeaderTable, 

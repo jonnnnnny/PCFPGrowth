@@ -75,7 +75,7 @@ public class Parallel
 	public static final String  MAXHEAPSIZE = "mapHeapSize";
 	public static final String NUM_GROUPS = "numGroups";
 	public static final String MAX_PER_GROUP = "maxPerGroup";
-	public static final int NUM_GROUPS_DEFAULT = 1000;
+	public static final int NUM_GROUPS_DEFAULT = 500;
 	public static final Pattern SPLITTER = Pattern
             .compile("[ ,\t]*[,|\t][ ,\t]*");
 	
@@ -193,8 +193,7 @@ public class Parallel
 			// TODO: handle finally clause
 			outputStream.close();
 		}
-//		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, filePath, Text.class, LongWritable.class);
-//		
+//		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, filePath, Text.class, LongWritable.class);		
 //		try
 //		{
 //			for(Pair<String, Long> pair : itemHeadertable)
